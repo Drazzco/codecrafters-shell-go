@@ -81,7 +81,7 @@ func handleCommand(cmd string) {
 		if _, ok := findExecutable(cmdList[0]); ok {
 			runCommand(cmdList[0], cmdList[1:])
 		} else {
-			fmt.Printf("%s: command not found\n", cmd)
+			fmt.Printf("%s: command not found\n", cmdList[0])
 		}
 		return
 	}
