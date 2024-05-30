@@ -8,6 +8,7 @@ import (
 	"strings"
 	"errors"
 	"strconv"
+	"path"
 	"path/filepath"
 )
 
@@ -16,7 +17,7 @@ func main() {
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
 
-		// Wait for user input 1
+		// Wait for user input
 		cmd, err := stdin.ReadString('\n')
 		if err != nil {
 			fmt.Println(err.Error())
@@ -88,9 +89,14 @@ func handleCommand(cmd string) {
 			fmt.Println(dir)
 		},
 		"cd": func() {
-			err := os.Chdir(cmdList[1])
+			p := path.Clean(cmdList[1])
+			if !path.IsAbs(p) {
+				dir, _ := os.Getwd()
+				p = path.Join(dir, p)
+			}
+			err := os.Chdir(p)
 			if err != nil {
-				fmt.Printf("cd: %s: No such file or directory\n", cmdList[1])
+				fmt.Printf("cd: %s: No such file or directory\n", p)
 			}
 		},
 	}
