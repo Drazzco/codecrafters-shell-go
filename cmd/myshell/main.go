@@ -39,6 +39,14 @@ func handleCommand(cmd string) {
 		"echo": func() {
 			fmt.Println(strings.Join(cmdList[1:], " "))
 		},
+		"type": func() {
+			switch cmdList[1] {
+			case "exit", "echo", "type":
+				fmt.Printf("%s is a shell builtin\n", cmdList[1])
+			default:
+				fmt.Printf("%s not found\n", cmdList[1])
+			}
+		},
 	}
 	fn, ok := commands[cmdList[0]]
 	if !ok {
