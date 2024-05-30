@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"errors"
+	"strconv"
 )
 
 func main() {
@@ -13,16 +15,35 @@ func main() {
 		fmt.Fprint(os.Stdout, "$ ")
 
 		// Wait for user input
-		in, err := stdin.ReadString('\n')
+		cmd, err := stdin.ReadString('\n')
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-		cmds := strings.Split(in, " ")
+		cmd = strings.TrimRight(cmd, "\n")
 
-		if cmds[0] == "exit" {
-			os.Exit(0)
-		} else {
-			fmt.Printf("%s: command not found\n", strings.TrimSpace(cmds[0]))
-		}
+		handleCommand(cmd)
 	}
+}
+
+func handleCommand(cmd string) {
+	cmdList := strings.Split(cmd, " ")
+
+	commands := map[string]func(){
+		"exit": func() {
+			code, err := strconv.Atoi(cmdList[1])
+			if errors.Is(err, strconv.ErrSyntax) {
+				os.Exit(0)
+			}
+			os.Exit(code)
+		},
+		"echo": func() {
+			fmt.Println(strings.Join(cmdList[1:], " "))
+		},
+	}
+	fn, ok := commands[cmdList[0]]
+	if !ok {
+		fmt.Printf("%s: command not found\n", cmd)
+		return
+	}
+	fn()
 }
