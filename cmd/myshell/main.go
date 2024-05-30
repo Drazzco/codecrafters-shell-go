@@ -7,6 +7,7 @@ import (
 	"strings"
 	"errors"
 	"strconv"
+	"path/filepath"
 )
 
 func main() {
@@ -23,6 +24,16 @@ func main() {
 
 		handleCommand(cmd)
 	}
+}
+
+func findExecutable(name string, paths []string) (string, bool) {
+	for _, path := range paths {
+		fullpath := filepath.Join(path, name)
+		if _, err := os.Stat(fullpath); err == nil {
+			return fullpath, true
+		}
+	}
+	return "", false
 }
 
 func handleCommand(cmd string) {
@@ -44,7 +55,12 @@ func handleCommand(cmd string) {
 			case "exit", "echo", "type":
 				fmt.Printf("%s is a shell builtin\n", cmdList[1])
 			default:
-				fmt.Printf("%s not found\n", cmdList[1])
+				paths := strings.Split(os.Getenv("PATH"), ":")
+				if path, ok := findExecutable(cmdList[1], paths); ok {
+					fmt.Printf("%s is %s\n", cmdList[1], path)
+				} else {
+					fmt.Printf("%s not found\n", cmdList[1])
+				}
 			}
 		},
 	}
