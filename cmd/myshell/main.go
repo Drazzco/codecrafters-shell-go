@@ -79,6 +79,14 @@ func handleCommand(cmd string) {
 				}
 			}
 		},
+		"pwd": func() {
+			dir, err := os.Getwd()
+			if err != nil {
+				fmt.Println("error reading working directory")
+				return
+			}
+			fmt.Println(dir)
+		},
 	}
 	fn, ok := commands[cmdList[0]]
 	if !ok {
