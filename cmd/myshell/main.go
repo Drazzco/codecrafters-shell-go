@@ -17,7 +17,12 @@ func main() {
 		if err != nil {
 			fmt.Println(err.Error())
 		}
+		cmds := strings.Split(in, " ")
 
-		fmt.Printf("%s: command not found\n", strings.TrimRight(in, "\n"))
+		if cmds[0] == "exit" {
+			os.Exit(0)
+		} else {
+			fmt.Printf("%s: command not found\n", strings.TrimSpace(cmds[0]))
+		}
 	}
 }
