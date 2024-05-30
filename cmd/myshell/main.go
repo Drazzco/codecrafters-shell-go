@@ -20,6 +20,7 @@ func main() {
 		cmd, err := stdin.ReadString('\n')
 		if err != nil {
 			fmt.Println(err.Error())
+			os.Exit(1)
 		}
 		cmd = strings.TrimRight(cmd, "\n")
 
@@ -35,6 +36,9 @@ func findExecutable(name string) (string, bool) {
 			return fullpath, true
 		}
 	}
+	if _, err := os.Stat(name); err == nil {
+		return name, true
+	}
 	return "", false
 }
 
@@ -45,7 +49,7 @@ func runCommand(cmd string, args []string) {
 
 	err := command.Run()
 	if err != nil {
-		fmt.Printf("%s: command not found\n", cmd)
+		fmt.Fprintf(os.Stderr, "%s: command not found\n", cmd)
 	}
 }
 
