@@ -17,7 +17,7 @@ func main() {
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
 
-		// Wait for user input 1
+		// Wait for user input
 		cmd, err := stdin.ReadString('\n')
 		if err != nil {
 			fmt.Println(err.Error())
@@ -89,7 +89,17 @@ func handleCommand(cmd string) {
 			fmt.Println(dir)
 		},
 		"cd": func() {
-			p := path.Clean(cmdList[1])
+			var dir string
+			if len(cmdList[1]) == 0 {
+				dir = getHomeDir()
+			} else {
+				if cmdList[1] == "~" {
+					dir = getHomeDir()
+				} else {
+					dir = cmdList[1]
+				}
+			}
+			p := path.Clean(dir)
 			if !path.IsAbs(p) {
 				dir, _ := os.Getwd()
 				p = path.Join(dir, p)
@@ -110,4 +120,12 @@ func handleCommand(cmd string) {
 		return
 	}
 	fn()
+}
+
+func getHomeDir() string {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println(err)
+	}
+	return home
 }
