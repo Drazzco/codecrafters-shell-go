@@ -106,7 +106,7 @@ func handleCommand(cmd string) {
 			}
 			err := os.Chdir(p)
 			if err != nil {
-				fmt.Printf("cd: %s: No such file or directory\n", p)
+				fmt.Printf("%s: No such file or directory\n", p)
 			}
 		},
 	}
