@@ -17,7 +17,7 @@ func main() {
 	for {
 		fmt.Fprint(os.Stdout, "$ ")
 
-		// Wait for user input
+		// Wait for user input 1
 		cmd, err := stdin.ReadString('\n')
 		if err != nil {
 			fmt.Println(err.Error())
